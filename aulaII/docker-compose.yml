@@ -1,0 +1,11 @@
+services:
+  database:
+    image: mysql:5.7
+    # plataform: linux/x86_64
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./.data:/var/lib/mysql
+      # - ./.data:/usr/local/mysql/data
