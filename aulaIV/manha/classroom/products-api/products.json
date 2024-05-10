@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "name": "Produto 1",
+    "category": "qualquer",
+    "count": 2,
+    "price": 20
+  },
+  {
+    "id": 2,
+    "name": "Produto 1",
+    "category": "qualquer",
+    "count": 2,
+    "price": 20
+  },
+  {
+    "id": 3,
+    "name": "Produto 1",
+    "category": "qualquer",
+    "count": 2,
+    "price": 20
+  },
+  {
+    "id": 4,
+    "name": "Produto 1",
+    "category": "qualquer",
+    "count": 2,
+    "price": 20
+  },
+  {
+    "id": 5,
+    "name": "Produto 1",
+    "category": "qualquer",
+    "count": 2,
+    "price": 20
+  },
+  {
+    "id": 6,
+    "name": "Produto 1",
+    "category": "qualquer",
+    "count": 2,
+    "price": 20
+  },
+  {
+    "id": 7,
+    "name": "Produto 1",
+    "category": "qualquer",
+    "count": 2,
+    "price": 20
+  }
+]
