@@ -1,6 +1,7 @@
 package products
 
 import (
+	"context"
 	"database/sql"
 	"log"
 
@@ -8,11 +9,15 @@ import (
 )
 
 const (
-	GetAllProducts = "SELECT id, name, type, count, price FROM products"
-	GetOneProduct  = "SELECT id, name, type, count, price FROM products WHERE id = ?"
-	SaveProduct    = "INSERT INTO products(name, type, count, price) VALUES(?,?,?,?)"
-	UpdateProduct  = "UPDATE products SET name = ?, type = ?, count = ?, price = ? WHERE id = ?"
-	DeleteProduct  = "DELETE FROM products WHERE id = ?"
+	GetAllProducts     = "SELECT id, name, type, count, price FROM products"
+	GetOneProduct      = "SELECT id, name, type, count, price FROM products WHERE id = ?"
+	GetOneProductSleep = "SELECT SLEEP(30) FROM DUAL where 0 < ?"
+	SaveProduct        = "INSERT INTO products(name, type, count, price) VALUES(?,?,?,?)"
+	UpdateProduct      = "UPDATE products SET name = ?, type = ?, count = ?, price = ? WHERE id = ?"
+	DeleteProduct      = "DELETE FROM products WHERE id = ?"
+	GetProductFullData = "SELECT products.id, products.name, products.type, products.count, products.price, warehouses.name, warehouses.adress " +
+		"FROM products INNER JOIN warehouses ON products.id_warehouse = warehouses.id " +
+		"WHERE products.id = ?"
 )
 
 type MySqlRepository struct {
@@ -58,6 +63,31 @@ func (m *MySqlRepository) GetOne(id uint64) (entities.Product, error) {
 	var product entities.Product
 	// aqui definimos a ordem que queremos que o banco nos retorne os dados
 	rows, err := m.db.Query(GetOneProduct, id)
+	if err != nil {
+		log.Println(err)
+		return product, err
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(
+			&product.ID,
+			&product.Name,
+			&product.Category,
+			&product.Count,
+			&product.Price,
+		); err != nil {
+			log.Println(err.Error())
+			return product, nil
+		}
+	}
+
+	return product, nil
+}
+
+func (r *MySqlRepository) GetOneWithContext(ctx context.Context, id uint64) (entities.Product, error) {
+	var product entities.Product
+	// aqui definimos a ordem que queremos que o banco nos retorne os dados
+	rows, err := r.db.QueryContext(ctx, GetOneProduct, id)
 	if err != nil {
 		log.Println(err)
 		return product, err
@@ -157,6 +187,24 @@ func (m *MySqlRepository) Delete(id uint64) error {
 	defer stmt.Close()
 	_, err = stmt.Exec(id)
 	return err
+}
+
+func (r *MySqlRepository) GetFullData(id uint64) (entities.ProductFullData, error) {
+	var product entities.ProductFullData
+	rows, err := r.db.Query(GetProductFullData, id)
+
+	if err != nil {
+		log.Println(err)
+		return product, err
+	}
+	for rows.Next() {
+		if err := rows.Scan(&product.ID, &product.Name, &product.Category, &product.Count, &product.Price, &product.Warehouse,
+			&product.WarehouseAddress); err != nil {
+			log.Fatal(err)
+			return product, err
+		}
+	}
+	return product, nil
 }
 
 // func (m *MySqlRepository) LastID() (uint64, error) {

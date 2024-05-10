@@ -1,0 +1,24 @@
+volumes:
+  db_data: {}
+services:
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+  app:
+    build:
+      context: .
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 150M
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/go/src/app
+    
